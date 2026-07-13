@@ -70,6 +70,14 @@ def _init_event_processor(
 )
 @click.option("--config-file", type=click.Path(), help="Path to config file", required=True)
 @click.option("--port", type=int, help="Port to use for metrics server", required=True)
+@click.option(
+    "--metrics-addr",
+    type=str,
+    default="0.0.0.0",
+    show_default=True,
+    help="Address the metrics server binds to. Use '::' for IPv6 / dual-stack clusters.",
+    required=False,
+)
 @click.option("--verbose", type=bool, default=False, help="Enable debug logging", required=False)
 @click.option("--state-file", type=click.Path(), help="gpu health monitor state file path", required=True)
 @click.option("--dcgm-k8s-service-enabled", type=bool, help="Is DCGM K8s service Enabled", required=True)
@@ -93,6 +101,7 @@ def cli(
     dcgm_error_mapping_config_file,
     config_file,
     port,
+    metrics_addr,
     verbose,
     state_file,
     dcgm_k8s_service_enabled,
@@ -193,7 +202,7 @@ def cli(
 
     metadata_reader = MetadataReader(metadata_path) if thermal_margin_enabled else None
 
-    prom_server, t = start_http_server(port)
+    prom_server, t = start_http_server(port, addr=metrics_addr)
 
     def process_exit_signal(signum, frame):
         exit.set()

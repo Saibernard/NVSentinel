@@ -21,6 +21,9 @@ global:
     tag: "12-debian-12-r30"
     pullPolicy: IfNotPresent
   metricsPort: 2112
+  # Bind address for component metrics servers. "::" binds dual-stack
+  # (IPv6 + IPv4-mapped) so kubelet probes work in IPv6-only clusters.
+  metricsAddress: "::"
 
   # Datastore configuration
   # By default, datastore is not configured (internal mongodb-config ConfigMap is used).
